@@ -1,0 +1,55 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+    <div class="nav-bar"></div>
+
+    <div id="app">
+        <div class="product">
+            <div class="product-image">
+                <img :src="Image" alt="">
+            </div>
+            <div class="product-info">
+                <h1>{{title}}</h1>
+                <p v-if = "inventory > 10">In stock</p>
+                <p v-else-if = "inventory<=10 && inventory>0">All most sold out</p>
+                <p v-else >Out of stock</p>
+                <ul>
+                    <li v-for = "detail in details">{{detail}}</li>
+                </ul>
+                <div v-for = "varient in varients" 
+                    :key="varient.varientId"
+                    class="color-box"
+                    :style="{backgroundColor: varient.varientColor}"
+                    @mouseover ="updateProduct(varient.varientImage)">
+                </div>
+                <button v-on:click="addToCart" 
+                :disabled="!inventory"
+                :class="{disabledButton: !inventory}">Add to cart</button>
+
+                <div class="cart">
+                    <p>cart({{cart}})</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.7.4/dist/vue.js"></script>
+    <script src="/main.js"></script>
+</body>
+</html>

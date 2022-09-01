@@ -1,0 +1,216 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- vue cdn -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.7.4/dist/vue.js"></script>
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="app">
+      <h1>Events</h1>
+      <button @click="add(1)">Add a year</button>
+      <button @click="subtract(1)">Subtract a year</button>
+      <button @dblclick="add(10)">Add 10 years</button>
+      <button @dblclick="subtract(10)">Subtract 10 years</button>
+      <p>My age is {{age}}</p>
+      <div id="canvas" @mouseover="updateXY">{{x}}, {{y}}</div>
+
+      <h1>Keyboard Events</h1>
+      <label>Name:</label>
+      <input type="text" v-model="name">
+      <span>{{name}}</span>
+      <label>Age:</label>
+      <input type="text" v-on:keyup.enter="logAge">
+      <span>{{age}}</span>
+
+      <h1>Computed Properties</h1>
+      <button v-on:click="a++">Add to A</button>
+      <button v-on:click="b++">Add to B</button>
+      <p>A - {{a}}</p>
+      <p>B - {{b}}</p>
+      <p>Age + A = {{addToA}}</p>
+      <p>Age + B = {{addToB}}</p>
+
+      <h1>Dynamic Css</h1>
+      <h2>Example 1</h2>
+      <div v-on:click="available = !available" v-bind:class="{available:available}">
+        <span>Frank</span>
+      </div>
+
+      <h1>Conditionals</h1>
+      <button v-on:click="error = !error">Toggle Error</button>
+      <button v-on:click="success = !success">Toggle Success</button>
+      <!-- <p v-if="error">There has been an error</p>
+      <p v-else-if="success">Whooo, there is a success</p> -->
+      <p v-show="error">There has been an error</p>
+      <p v-show="success">Whooo, there is a success</p>
+
+      <h1>Looping through list</h1>
+      <ul>
+        <li v-for = "character in characters"> {{character}}</li>
+      </ul>
+      <ul>
+        <li v-for = "ninja in ninjas"> {{ninja.name}} - {{ninja.age}}</li>
+      </ul>
+      <template v-for = "ninja in ninjas">
+        <div v-for = "(val,key) in ninja">
+          <p>{{key}} - {{val}}</p>
+        </div>
+      </template>
+
+      <!-- ------------------- GAME ------------------ -->
+
+      <!-- bag image -->
+      <div id="bag" v-bind:class="{burst:ended}"></div>
+
+      <!-- bag-health -->
+      <div id="bag-health">
+        <div v-bind:style="{width:health + '%'}"></div>
+      </div>
+
+      <!-- game-controls -->
+      <div id="controls">
+        <button v-on:click="punch" v-show="!ended">Punch</button>
+        <button v-on:click="restart">Restart</button>
+      </div>
+
+      <h1>Refs</h1>
+      <input type="text" ref="input">
+      <button v-on:click="readRefs">Submit</button>
+      <p>Your fav food: {{output}}</p>
+
+    </div>
+  </body>
+
+  <script>
+    var vm = new Vue({
+      el: "#app",
+      data() {
+        return {
+          // age: 25,
+          x:0,
+          y:0,
+          name: '',
+          age: '',
+          a: 0,
+          b: 0,
+          age: 20,
+          available: true,
+          nearby: false,
+          error:false,
+          success:false,
+          characters: ['Mario', 'Luigi', 'Bowser', 'Yoshi'],
+          ninjas: [
+            {name:'Ryu', age:25},
+            {name:'Yoshi', age:35},
+            {name:'Ken', age:55},
+          ],
+          health: 100,
+          ended: false,
+          output: 'Your fav food'
+        };
+      },
+
+      methods: {
+        add: function(increment) {
+          return this.age += increment;
+        },
+        subtract: function(decrement) {
+          return this.age -= decrement;
+        },
+        updateXY: function(event) {
+          this.x = event.offsetX,
+          this.y = event.offsetY
+        },
+        logName: function() {
+          console.log('you entered your name')
+        },
+        logAge: function() {
+          console.log('you entered your age')
+        },
+
+        punch: function() {
+          this.health -= 10;
+          if (this.health <=0) {
+            this.ended = true;
+          }
+
+        },
+        restart: function () {
+          this.health = 100;
+          this.ended = false
+        },
+        readRefs: function() {
+          this.output = this.$refs.input.value;
+        }
+      },
+
+      computed: {
+        addToA: function() {
+          return this.a + this.age
+        },
+        addToB: function () {
+          return this.b + this.age
+        }
+      }
+    });
+  </script>
+
+  <style>
+    /* #canvas {
+      width: 600px;
+      padding: 200px;
+      text-align: center;
+      border:1px solid #333
+    }
+
+    span {
+      background: red;
+      display: inline-block;
+      padding: 10px;
+      color: #fff;
+      margin: 10px 0;
+    }
+
+    .available span {
+      background: green;
+    }
+
+    .nearby span:after {
+      content: 'nearby';
+      margin-left: 10px;
+    } */
+
+    #bag {
+      width: 200px;
+      height: 500px;
+      margin: 0 auto;
+      background: url(/bag.png) center no-repeat;
+      background-size: 80%;
+    }
+
+    #bag-health {
+      width: 200px;
+      border: 2px solid #000;
+      margin: 0 auto 20px auto;
+    }
+
+    #bag-health div {
+      height: 20px;
+      background: crimson;
+    }
+
+    #controls {
+      margin: 0 auto;
+      width: 120px;
+    }
+
+    #bag.burst {
+      background: url(/bag-burst.png) center no-repeat;
+      background-size: 80%;
+    }
+
+  </style>
+</html>
